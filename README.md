@@ -1,27 +1,30 @@
-# [Start Bootstrap](http://startbootstrap.com/) - [SB Admin 2](http://startbootstrap.com/template-overviews/sb-admin-2/)
+# Fractal Factory
 
-[SB Admin 2](http://startbootstrap.com/template-overviews/sb-admin-2/) is an open source, admin dashboard template for [Bootstrap](http://getbootstrap.com/) created by [Start Bootstrap](http://startbootstrap.com/).
+Fractal Factory is an open source, javascript app to make fractals and see how it works.
 
 ## Getting Started
 
 To use this template, choose one of the following options to get started:
 * Download the latest release on Start Bootstrap
 * Fork this repository on GitHub
-* Install via bower using `bower install startbootstrap-sb-admin-2`
 
 ## Bugs and Issues
 
-Have a bug or an issue with this template? [Open a new issue](https://github.com/IronSummitMedia/startbootstrap-sb-admin-2/issues) here on GitHub or leave a comment on the [template overview page at Start Bootstrap](http://startbootstrap.com/template-overviews/sb-admin-2/).
+Have a bug or an issue with this template?
+[Open a new issue](https://github.com/geck1942/fractal-factory/issues) here on GitHub.
 
 ## Creator
 
-Start Bootstrap was created by and is maintained by **David Miller**, Managing Parter at [Iron Summit Media Strategies](http://www.ironsummitmedia.com/).
+Fractal was created by **Aurelien Jacquot**, Founder of [Phoebe Coeus](http://phoebecoeus.net).
 
-* https://twitter.com/davidmillerskt
-* https://github.com/davidtmiller
+* https://twitter.com/geck1942
+* https://github.com/geck1942
+* http://phoebecoeus.net
 
-Start Bootstrap is based on the [Bootstrap](http://getbootstrap.com/) framework created by [Mark Otto](https://twitter.com/mdo) and [Jacob Thorton](https://twitter.com/fat).
+Fractal Factory is based on the [Bootstrap](http://getbootstrap.com/) framework created by [Mark Otto](https://twitter.com/mdo) and [Jacob Thorton](https://twitter.com/fat).
+Fractal Factory uses a light version of the [SB Admin 2] (https://github.com/IronSummitMedia/startbootstrap-sb-admin-2/) bootstrap theme made by [David Miller] (http://www.ironsummitmedia.com/).
 
 ## Copyright and License
 
-Copyright 2013-2015 Iron Summit Media Strategies, LLC. Code released under the [Apache 2.0](https://github.com/IronSummitMedia/startbootstrap-sb-admin-2/blob/gh-pages/LICENSE) license.
+Copyright 2015 Phoebe Coeus SARL. (http://phoebecoeus.net)
+Code released under the [Apache 2.0](https://github.com/Geck1942/fractal-factory/LICENSE) license.
