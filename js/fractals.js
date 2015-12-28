@@ -6,6 +6,9 @@ var AppViewModel = function (JQueryfractalCanvas, JQuerylineCanvas) {
 
     this.linetemplate = ko.observableArray([
         { x: 0, y: 0 },
+        { x: 10, y: 0 },
+        { x: 12, y: -10 },
+        { x: 14, y: 0 },
         { x: 24, y: 0 }
     ]);
     this.linetemplateSteps = 24;
@@ -68,48 +71,59 @@ $(function () {
     var templatedragindex = null;
     templateCanvas.on("mousedown", function (evt, data) {
         var linecoord = getTemplateLineCoordinates(evt.offsetX, evt.offsetY);
-        var detectedmovingIndex = 0;
         var linetemplate = appViewModel.linetemplate();
+
         for (var i = 0; i < linetemplate.length; i++) {
             if (linetemplate[i].x == linecoord.x && linetemplate[i].y == linecoord.y) {
-                // user clicked on an existing point. 
-                // start drag and drop
-                if (i == 0) {
-                    // user can't move the first dot.however, we can add a new one between i = 0 and i = 1
-                    // and still do the drag and drop
-                    appViewModel.linetemplate.unshift(linecoord);
-                    templatedragindex = 1;
-                }
-                else if (i == linetemplate.length - 1) {
-                    // user can't move the last dot.however, we can add a new one just before
-                    // and still do the drag and drop
-                    appViewModel.linetemplate.push(linecoord);
-                    templatedragindex = appViewModel.linetemplate().length - 2;
-                }
-                else {
-                    if (evt.button == 0)
-                        // click
-                        templatedragindex = i;
-                    else {
-                        //rightclick = delete dot
-                        appViewModel.linetemplate.splice(i, 1);
-                        drawtemplate(templateCanvas, linetemplate);
-                        return false;
-                    }
-                }
+                // user clicked on an existing point.
+                // declare drag and drop
+                templatedragindex = i
                 break;
             }
         }
+        if (templatedragindex == null)
+        {
+            // user clicked on whitespace.
+            // find a place to add a new point.
+            for (var i = 1; i < linetemplate.length; i++) {
+                if ((linetemplate[i-1].x <= linecoord.x && linetemplate[i].x >= linecoord.x
+                        || linetemplate[i-1].x >= linecoord.x && linetemplate[i].x <= linecoord.x )
+                 && (linetemplate[i-1].y <= linecoord.y && linetemplate[i].y >= linecoord.y
+                        || linetemplate[i-1].y >= linecoord.y && linetemplate[i].y <= linecoord.y )) {
+                    // insert a new dot here.
+                    appViewModel.linetemplate.splice(i, 0, linecoord);
+                    templatedragindex = i;
+                    break;
+                }
+            }
+
+        }
         drawtemplate(templateCanvas, linetemplate);
+        appViewModel.fractal().draw();
     });
     templateCanvas.on("mousemove", function (evt, data) {
         if (templatedragindex != null) {
             var linecoord = getTemplateLineCoordinates(evt.offsetX, evt.offsetY);
-            appViewModel.linetemplate()[templatedragindex] = linecoord;
-            if (templatedragindex == appViewModel.linetemplate().length - 1) {
-                // if moving the last dot, it must stay at x = 24. also
-                appViewModel.linetemplate()[templatedragindex] = { x: 24, y: linecoord.y };
-                appViewModel.linetemplate()[0] = { x: 0, y: linecoord.y };
+            if(linecoord.x < 0 || linecoord.x > 24 || linecoord.y < -12 || linecoord.y > 12){
+                // dot is out of bounds. delete it
+                appViewModel.linetemplate.splice(templatedragindex, 1);
+                templatedragindex = null;
+            }
+            else {
+
+                // first dot must remain on far left
+                if (templatedragindex == 0)
+                    linecoord.x = 0;
+                // last dot must remain on far right
+                else if (templatedragindex == appViewModel.linetemplate().length - 1)
+                    linecoord.x = 24;
+
+                // check if the dot at least moved:
+                if (appViewModel.linetemplate()[templatedragindex].x == linecoord.x
+                    && appViewModel.linetemplate()[templatedragindex].y == linecoord.y)
+                    return;
+                // moving the dot
+                appViewModel.linetemplate()[templatedragindex] = linecoord;
             }
             drawtemplate(templateCanvas, appViewModel.linetemplate());
             appViewModel.fractal().draw();
@@ -117,7 +131,7 @@ $(function () {
     });
     templateCanvas.on("mouseup mouseout", function (evt, data) {
         templatedragindex = null;
-        drawtemplate(templateCanvas, appViewModel.linetemplate());
+        //drawtemplate(templateCanvas, appViewModel.linetemplate());
     });
 });
 
@@ -129,8 +143,8 @@ var fractal = function (jQueryCanvasElement) {
     this.element = jQueryCanvasElement;
     this.margin = 200;
     this.ctx = this.element[0].getContext("2d");
-    this.shapesides = ko.observable(4);
-    this.depth = ko.observable(7);
+    this.shapesides = ko.observable(6);
+    this.depth = ko.observable(6);
     this.livepreview = ko.observable(true);
     this.shapewidth = this.element.attr("width") - this.margin;
     this.shapecenter = {
