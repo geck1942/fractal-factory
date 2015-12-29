@@ -49,9 +49,9 @@
                         <div role="form">
                             <label class="control-label" for="fractal-sides">Polygon number of sides</label>
                             <div class="form-group input-group">
-                                <span class="input-group-addon" data-bind="html: fractal().shapesides"></span>
+                                <span class="input-group-addon" data-bind="html: fractal().polygon().sides"></span>
                                 <input id="fractal-sides" type="range" placeholder="Polygon sides" class="form-control"
-                                       data-bind="value: fractal().shapesides"
+                                       data-bind="value: fractal().polygon().sides"
                                        min="2" max="24">
                             </div>
                             <!--<label class="control-label" for="fractal-depth">Zoom</label>
@@ -68,10 +68,10 @@
                             <label class="control-label" for="fractal-depth">Live preview (quality)</label>
                             <div class="form-group input-group">
                                 <span class="input-group-addon" data-bind="">
-                                    <input type="checkbox" value="1" checked="checked" data-bind="checked: fractal().livepreview">
+                                    <input type="checkbox" value="1" checked="checked" data-bind="checked: true">
                                 </span>
                                 <input id="fractal-depth" type="range" placeholder="Depth"
-                                       data-bind="value: fractal().depth, enabled: fractal().livepreview"
+                                       data-bind="value: fractal().maxdepth, enabled: true"
                                        min="1" max="8">
 
                             </div>
@@ -121,6 +121,10 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- Fractals -->
-    <script src="./js/fractals.js"></script>
+    <script src="./js/pattern.js"></script>
+    <script src="./js/polygon.js"></script>
+    <script src="./js/fractal.js"></script>
+    <script src="./js/ui.js"></script>
+    <script src="./js/core.js"></script>
 </body>
 </html>
