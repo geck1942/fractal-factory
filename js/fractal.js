@@ -5,9 +5,9 @@
     var element = jQueryCanvasElement;
     var ctx = element[0].getContext("2d");
     var drawingmode = "lines";
-    var draw = function () {
+    var draw = function (foo, forcedmaxdepth) {
         draw_clearpolygon();
-        draw_polygon();
+        draw_polygon(forcedmaxdepth || maxdepth());
     };
 
     // draw the fractal in the jQueryCanvasElement HTML canvas.
@@ -18,7 +18,7 @@
     };
 
     // draw the fractal in the jQueryCanvasElement HTML canvas.
-    var draw_polygon = function () {
+    var draw_polygon = function (forcedmaxdepth) {
         ctx.strokeStyle = "green";
         var sides = polygon.sides(); //int
         var angle = 360 / sides;
@@ -35,14 +35,16 @@
                 x: Math.cos(toAngle),
                 y: Math.sin(toAngle)
             }
-            draw_segment(line_from, line_to, 0);
+            draw_segment(line_from, line_to, 0, forcedmaxdepth);
         }
     };
     // draw a fractal segment. Depending the current depth, the segment will be splitted in 
     // sub segments (recursivity) or drawn as a single line (end of recursivity)
-    var draw_segment = function (line_from, line_to, depth) {
+    var draw_segment = function (line_from, line_to, depth, forcedmaxdepth) {
+        var linelength = Math.sqrt(Math.pow(line_to.y - line_from.y, 2) + Math.pow(line_to.x - line_from.x, 2));
         var appliedPatternDataArray = pattern.applyPattern(line_from, line_to);
-        if (depth >= maxdepth()) {
+
+        if (linelength < drawing_min_polarlength || depth >= forcedmaxdepth) {
             // no more details to add. Draw the pattern.
             draw_pattern(appliedPatternDataArray);
         }
@@ -50,7 +52,7 @@
         {
             // parse each sub line and redraw sub segments
             for (var i = 0; i < appliedPatternDataArray.length - 1; i++) {
-                draw_segment(appliedPatternDataArray[i], appliedPatternDataArray[i + 1], depth + 1);
+                draw_segment(appliedPatternDataArray[i], appliedPatternDataArray[i + 1], depth + 1, forcedmaxdepth);
             }
         }
     };
@@ -87,8 +89,12 @@
         return {
             x: (width / 2) + polar_x * (width - padding) / 2,
             y: (width / 2) + polar_y * (width - padding) / 2
+        };
     };
-    }
+    // 3 pixels is the minmimum length for dividing a pattern, less than that, no more depth needed.
+    var drawing_min_polarlength = 6  / (PolygonData.width / 2 - (PolygonData.padding)) // drawable area
+
+
     // ko
     var polygon = new Polygon(PolygonData);
     var pattern = new Pattern(PatternData);

@@ -43,27 +43,27 @@ $(function () {
     $("#btn-hdrendering").click(function () {
         // generate in good quality.
         // first, must define which quality (too much may crash browser)
-        var quality = 14;
-        switch (appViewModel.fractal().pattern().steps) {
-            case 3: // 2 lines
-                quality = 17;
-                break;
-            case 4: // 3 lines
-                quality = 13;
-                break;
-            case 5: // 4 lines
-                quality = 11;
-                break;
-            default: // 5+ lines
-                quality = 10;
-                break;
-        }
+        var quality = 16;
+        //switch (appViewModel.fractal().pattern().steps) {
+        //    case 3: // 2 lines
+        //        quality = 17;
+        //        break;
+        //    case 4: // 3 lines
+        //        quality = 13;
+        //        break;
+        //    case 5: // 4 lines
+        //        quality = 11;
+        //        break;
+        //    default: // 5+ lines
+        //        quality = 10;
+        //        break;
+        //}
         // based on a 8 sides polygon.
         if (appViewModel.fractal().polygon().sides() > 6)
             quality--;
         if (appViewModel.fractal().polygon().sides() > 12)
             quality--;
-        //appViewModel.fractal().draw(null, quality);
+        appViewModel.fractal().draw(null, quality);
     });
 
 });
