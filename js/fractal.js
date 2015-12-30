@@ -1,10 +1,10 @@
 ﻿var Fractal = function (jQueryCanvasElement, PolygonData, PatternData) {
     /// private
     var that = this;
-    var maxdepth = ko.observable(5);
+    var maxdepth = ko.observable(4);
     var element = jQueryCanvasElement;
     var ctx = element[0].getContext("2d");
-    var drawingmode = "dots";
+    var drawingmode = ko.observable("dots");
     var draw = function (foo, forcedmaxdepth) {
         draw_clearpolygon();
         draw_polygon(forcedmaxdepth || maxdepth());
@@ -19,7 +19,6 @@
 
     // draw the fractal in the jQueryCanvasElement HTML canvas.
     var draw_polygon = function (forcedmaxdepth) {
-        ctx.strokeStyle = "green";
         var sides = polygon.sides(); //int
         var angle = 360 / sides;
 
@@ -58,7 +57,7 @@
     };
     // draw a pattern representation. 1 unit long space (center at [0,0] ).
     var draw_pattern = function (patternDataArray, depth) {
-        switch (drawingmode) {
+        switch (drawingmode()) {
             case "dots":
                 for (var i = 0; i < patternDataArray.length; i++) {
 
@@ -73,12 +72,13 @@
                 ctx.beginPath();
                 for (var i = 0; i < patternDataArray.length; i++) {
                     var IMG_location = drawing_getImageCoordinates(patternDataArray[i].x, patternDataArray[i].y);
+                    ctx.strokeStyle = patternDataArray[i].color;
                     if (i == 0)
                         ctx.moveTo(IMG_location.x, IMG_location.y);
                     else
                         ctx.lineTo(IMG_location.x, IMG_location.y);
+                    ctx.stroke();
                 }
-                ctx.stroke();
                 break;
         }
 
@@ -114,6 +114,7 @@
         'polygon': ko.observable(polygon),
         'pattern': ko.observable(pattern),
         'maxdepth': maxdepth,
+        'drawingmode': drawingmode,
         // methods
         'draw': draw,
         'init': init

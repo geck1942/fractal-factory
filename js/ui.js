@@ -37,6 +37,7 @@
 
         }
     };
+    var templatedragindex = null;
     // end of Grid
 
     var that = this;
@@ -67,9 +68,11 @@
     }
     var drawtemplate = function () {
         var pattern = appViewModel.fractal().pattern().data();
+        // draw grid for pattern template
         ctx.clearRect(0, 0, linetemplateWidth, linetemplateWidth);
         ctx.strokeStyle = "gray";
         ctx.font = "10px Arial";
+
         for (var x = 0; x <= linetemplateSteps; x++) {
             if (x % 4 == 0) {
                 var txtcoordHoriz = getTemplateIMGCoordinates(x, 12.5);
@@ -85,29 +88,43 @@
                     ctx.fillRect(dotcoord.x, dotcoord.y - 1, 1, 3);
                 if (x % 4 != 0 && y % 4 != 0)
                     ctx.fillRect(dotcoord.x, dotcoord.y, 1, 1);
-            }   
+            }
         }
+        // end of grid
 
-        ctx.strokeStyle = "red";
+        // draw lines
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 2
         ctx.beginPath();
         for (var i = 0; i < pattern.length; i++) {
             var coords = getTemplateIMGCoordinates(pattern[i].x(), pattern[i].y());
-            ctx.arc(coords.x, coords.y, 5, 0, 2 * Math.PI);
             if (i == 0)
                 ctx.moveTo(coords.x, coords.y);
-            else {
+            else
                 ctx.lineTo(coords.x, coords.y);
-            }
         }
         ctx.stroke();
-        ctx.strokeStyle = "black";
+
+        // draw handles
         for (var i = 0; i < pattern.length; i++) {
             var coords = getTemplateIMGCoordinates(pattern[i].x(), pattern[i].y());
+            ctx.beginPath();
+            ctx.fillStyle = pattern[i].color();
+            if (templatedragindex == i) {
+                // this handle is being moved by user: highlight
+                ctx.lineWidth = 4
+                ctx.arc(coords.x, coords.y, 10, 0, 2 * Math.PI);
+            }
+            else {
+                // this handle is being moved by user: highlight
+                ctx.lineWidth = 2
+                ctx.arc(coords.x, coords.y, 6, 0, 2 * Math.PI);
+            }
+            ctx.stroke();
+            ctx.fill();
         }
-    }
+    };
     var init = function () {
-
-        var templatedragindex = null;
         element.on("mousedown", function (evt, data) {
             var linecoord = getTemplateLineCoordinates(evt.offsetX, evt.offsetY);
             var pattern = appViewModel.fractal().pattern().data();
@@ -132,7 +149,7 @@
                         pattern.splice(i, 0, new PatternStep({
                             'x': linecoord.x,
                             'y': linecoord.y,
-                            'color' : "blue"
+                            'color': pattern[i - 1].color()
                         }));
                         templatedragindex = i;
                         appViewModel.fractal().pattern.notifySubscribers(appViewModel.fractal().pattern());
@@ -143,8 +160,9 @@
             }
         });
         element.on("mousemove", function (evt, data) {
+            var linecoord = getTemplateLineCoordinates(evt.offsetX, evt.offsetY);
             if (templatedragindex != null) {
-                var linecoord = getTemplateLineCoordinates(evt.offsetX, evt.offsetY);
+                // arlready doing drag and drop
                 if (linecoord.x < 0 || linecoord.x > 24 || linecoord.y < -12 || linecoord.y > 12) {
                     // dot is out of bounds. delete it
                     appViewModel.fractal().pattern().data.splice(templatedragindex, 1);
@@ -168,6 +186,18 @@
                     appViewModel.fractal().pattern().data()[templatedragindex].y(linecoord.y);
                 }
                 appViewModel.fractal().pattern.notifySubscribers(appViewModel.fractal().pattern());
+            }
+            else
+            {
+                for (var i = 0; i < pattern.length; i++) {
+                    if (pattern[i].x() == linecoord.x && pattern[i].y() == linecoord.y) {
+                        // user mouse moved on an existing point.
+                        // highlight it
+                        templatedragindex = i
+                        break;
+                    }
+                }
+                // looking for a handle to drag
             }
         });
         element.on("mouseup mouseout", function (evt, data) {

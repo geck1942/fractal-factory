@@ -35,6 +35,7 @@ $(function () {
     fractal.polygon().sides.subscribe(fractal.draw, fractal);
     fractal.maxdepth.subscribe(fractal.draw, fractal);
     fractal.pattern.subscribe(fractal.draw, fractal);
+    fractal.drawingmode.subscribe(fractal.draw, fractal);
     fractal.pattern.subscribe(ui.drawtemplate, fractal);
     fractal.draw();
     ui.drawtemplate();
