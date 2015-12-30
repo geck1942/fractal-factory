@@ -19,9 +19,9 @@ $(function () {
 };
     var patternData = [
         { x: 0, y: 0, color: "red" },
-        { x: 10, y: 0, color: "blue" },
+        { x: 10, y: 0, color: "orange" },
         { x: 12, y: -10, color: "yellow" },
-        { x: 14, y: 0, color: "blue" },
+        { x: 14, y: 0, color: "orange" },
         { x: 24, y: 0, color: "red" }
     ];
     var fractal = new Fractal(FCanvas, polygonData, patternData);

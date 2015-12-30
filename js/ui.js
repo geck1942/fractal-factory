@@ -79,9 +79,13 @@
             }
             for (var y = -12; y <= linetemplateSteps - 12; y++) {
                 var dotcoord = getTemplateIMGCoordinates(x, y);
-                ctx.fillRect(dotcoord.x, dotcoord.y, 1, 1);
-
-            }
+                if (y % 4 == 0)
+                    ctx.fillRect(dotcoord.x - 1, dotcoord.y, 3, 1);
+                if (x % 4 == 0)
+                    ctx.fillRect(dotcoord.x, dotcoord.y - 1, 1, 3);
+                if (x % 4 != 0 && y % 4 != 0)
+                    ctx.fillRect(dotcoord.x, dotcoord.y, 1, 1);
+            }   
         }
 
         ctx.strokeStyle = "red";

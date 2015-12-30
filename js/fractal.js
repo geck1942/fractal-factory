@@ -4,7 +4,7 @@
     var maxdepth = ko.observable(5);
     var element = jQueryCanvasElement;
     var ctx = element[0].getContext("2d");
-    var drawingmode = "lines";
+    var drawingmode = "dots";
     var draw = function (foo, forcedmaxdepth) {
         draw_clearpolygon();
         draw_polygon(forcedmaxdepth || maxdepth());
@@ -13,7 +13,7 @@
     // draw the fractal in the jQueryCanvasElement HTML canvas.
     var draw_clearpolygon = function () {
         ctx.clearRect(0, 0, polygon.width(), polygon.width());
-        ctx.strokeStyle = "black";
+        ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, polygon.width(), polygon.width());
     };
 
@@ -46,7 +46,7 @@
 
         if (linelength < drawing_min_polarlength || depth >= forcedmaxdepth) {
             // no more details to add. Draw the pattern.
-            draw_pattern(appliedPatternDataArray);
+            draw_pattern(appliedPatternDataArray, depth);
         }
         else
         {
@@ -57,15 +57,17 @@
         }
     };
     // draw a pattern representation. 1 unit long space (center at [0,0] ).
-    var draw_pattern = function (patternDataArray) {
+    var draw_pattern = function (patternDataArray, depth) {
         switch (drawingmode) {
             case "dots":
-                //this.ctx.moveTo(RelX, FromY);
-                //if (!this.drawingfirstdot) {
-                //    this.ctx.arc(FromRelX, FromRelY, 8 - _depth, 0, 2 * Math.PI);
-                //    this.drawingfirstdot = true;
-                //}
-                //this.ctx.arc(RelX, RelY, 8 - _depth, 0, 2 * Math.PI);
+                for (var i = 0; i < patternDataArray.length; i++) {
+
+                    ctx.fillStyle = patternDataArray[i].color;
+                    var IMG_location = drawing_getImageCoordinates(patternDataArray[i].x, patternDataArray[i].y);
+                    ctx.beginPath();
+                    ctx.arc(IMG_location.x, IMG_location.y, 1, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
                 break;
             case "lines":
                 ctx.beginPath();
