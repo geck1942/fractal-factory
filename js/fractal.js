@@ -1,4 +1,4 @@
-﻿var Fractal = function (jQueryCanvasElement, PolygonData, PatternData) {
+﻿var Fractal = function (jQueryCanvasElement, data) {
     /// private
     var that = this;
     var maxdepth = ko.observable(4);
@@ -12,14 +12,14 @@
 
     // draw the fractal in the jQueryCanvasElement HTML canvas.
     var draw_clearpolygon = function () {
-        ctx.clearRect(0, 0, polygon.width(), polygon.width());
+        ctx.clearRect(0, 0, polygon().width(), polygon().width());
         ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, polygon.width(), polygon.width());
+        ctx.fillRect(0, 0, polygon().width(), polygon().width());
     };
 
     // draw the fractal in the jQueryCanvasElement HTML canvas.
     var draw_polygon = function (forcedmaxdepth) {
-        var sides = polygon.sides(); //int
+        var sides = polygon().sides(); //int
         var angle = 360 / sides;
 
         for (var sideindex = 0; sideindex < sides; sideindex++) {
@@ -41,7 +41,7 @@
     // sub segments (recursivity) or drawn as a single line (end of recursivity)
     var draw_segment = function (line_from, line_to, depth, forcedmaxdepth) {
         var linelength = Math.sqrt(Math.pow(line_to.y - line_from.y, 2) + Math.pow(line_to.x - line_from.x, 2));
-        var appliedPatternDataArray = pattern.applyPattern(line_from, line_to);
+        var appliedPatternDataArray = pattern().applyPattern(line_from, line_to);
 
         if (linelength < drawing_min_polarlength || depth >= forcedmaxdepth) {
             // no more details to add. Draw the pattern.
@@ -85,22 +85,31 @@
     };
     // return the x/y coordinates of the picture from a 1 unit long space coordinates.
     var drawing_getImageCoordinates = function (polar_x, polar_y) {
-        var width = polygon.width();
+        var width = polygon().width();
         var height = width; // square
-        var padding = polygon.padding();
+        var padding = polygon().padding();
         return {
             x: (width / 2) + polar_x * (width - padding) / 2,
             y: (width / 2) + polar_y * (width - padding) / 2
         };
     };
-    // 3 pixels is the minmimum length for dividing a pattern, less than that, no more depth needed.
-    var drawing_min_polarlength = 6  / (PolygonData.width / 2 - (PolygonData.padding)) // drawable area
 
 
     // ko
-    var polygon = new Polygon(PolygonData);
-    var pattern = new Pattern(PatternData);
+    var polygon = ko.observable(new Polygon(data.polygon));
+    var pattern = ko.observable(new Pattern(data.pattern));
 
+    // 3 pixels is the minmimum length for dividing a pattern, less than that, no more depth needed.
+    var drawing_min_polarlength = 6 / (polygon().width() / 2 - (polygon().padding())) // drawable area
+
+
+    // returns object raw data for storage / initialization
+    var getdata = function () {
+        return {
+            'polygon': polygon().getdata(),
+            'pattern' : pattern().getdata()
+        }
+    };
     var init = function () {
 
     }();
@@ -111,12 +120,13 @@
         // todo init ui properties through jquery attibutes
         'UIMargin': 200,
         'UIWidth': 800,
-        'polygon': ko.observable(polygon),
-        'pattern': ko.observable(pattern),
+        'polygon': polygon,
+        'pattern': pattern,
         'maxdepth': maxdepth,
         'drawingmode': drawingmode,
         // methods
         'draw': draw,
+        'getdata' : getdata,
         'init': init
     };
 };

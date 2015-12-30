@@ -1,7 +1,7 @@
 ﻿var Pattern = function (PatternDataArray) {
     /// private
     var that = this;
-    var items = [];
+    var items = ko.observableArray();
     var init = function () {
         for (var i = 0; i < PatternDataArray.length; i++) {
             items.push(new PatternStep(PatternDataArray[i]));
@@ -20,11 +20,11 @@
             y: (line_to.y + line_from.y) / 2
         }
 
-        for (var i = 0; i < items.length; i++) {
+        for (var i = 0; i < items().length; i++) {
             var patternStepData = {
-                x : items[i].x(),
-                y : items[i].y(),
-                color :items[i].color()
+                x : items()[i].x(),
+                y : items()[i].y(),
+                color :items()[i].color()
             }
             // replace the [0 24, -12 12] grid coordinates to a [-0.5 0.5, -0.5 0.5] space.
             patternStepData.x = (patternStepData.x - 12) / 24;
@@ -50,14 +50,22 @@
         }
         return subline;
     };
+    // returns object raw data for storage / initialization
+    var getdata = function () {
+        var itemsdata = [];
+        for (var i = 0; i < items().length; i++)
+            itemsdata.push(items()[i].getdata());
+        return itemsdata;
+    };
 
     /// public
     return {
         // properties
-        'data': ko.observableArray(items),
+        'data': items,
         'steps': items.length,
         // methods
-        'applyPattern': applyPattern
+        'applyPattern': applyPattern,
+        'getdata' : getdata
 
     };
 };
@@ -67,23 +75,27 @@ var PatternStep = function (PatternStepData) {
     var init = function () {
 
     };
-    // replace the [0 24, -12 12] grid coordinates to a [-1 1, -1 1] space.
-    var relativizePosition = function () {
-        x = (x - 12) / 12,
-        y = y / 12
-    };
     // x is from 0 to 24.
-    var x = PatternStepData.x;
+    var x = ko.observable(PatternStepData.x);
     // x is from -12 to 12.
-    var y = PatternStepData.y;
-    var color = PatternStepData.color;
+    var y = ko.observable(PatternStepData.y);
+    var color = ko.observable(PatternStepData.color);
 
+    // returns object raw data for storage / initialization
+    var getdata = function () {
+        return {
+            'x': x(),
+            'y': y(),
+            'color': color(),
+        }
+    };
     /// public
     return {
         // properties
-        'x': ko.observable(x),
-        'y': ko.observable(y),
-        'color': ko.observable(color)
+        'x': x,
+        'y': y,
+        'color': color,
         // methods
+        'getdata' : getdata
     };
 };

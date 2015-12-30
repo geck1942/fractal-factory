@@ -1,4 +1,18 @@
 ﻿var appViewModel;
+var defaultFractalData = {
+    'polygon': {
+        'sides' : 6,
+        'width': 800,
+        'padding': 100
+    },
+    'pattern' : [
+        { x: 0, y: 0, color: "red" },
+        { x: 10, y: 0, color: "orange" },
+        { x: 12, y: -10, color: "yellow" },
+        { x: 14, y: 0, color: "orange" },
+        { x: 24, y: 0, color: "red" }
+    ]
+}
 
 $(function () {
     var FCanvas = $("#fractal-canvas");
@@ -12,19 +26,8 @@ $(function () {
 
     var ui = new UI(templateCanvas);
 
-    var polygonData = {
-        'sides' : 6,
-        'width': FCanvas.attr("width"),
-        'padding': 100
-};
-    var patternData = [
-        { x: 0, y: 0, color: "red" },
-        { x: 10, y: 0, color: "orange" },
-        { x: 12, y: -10, color: "yellow" },
-        { x: 14, y: 0, color: "orange" },
-        { x: 24, y: 0, color: "red" }
-    ];
-    var fractal = new Fractal(FCanvas, polygonData, patternData);
+    var fractalData = load() || defaultFractalData;
+    var fractal = new Fractal(FCanvas, fractalData);
 
     appViewModel = new AppViewModel({
         'fractal': fractal,
@@ -32,10 +35,15 @@ $(function () {
     });
 
     ko.applyBindings(appViewModel);
-    fractal.polygon().sides.subscribe(fractal.draw, fractal);
-    fractal.maxdepth.subscribe(fractal.draw, fractal);
-    fractal.pattern.subscribe(fractal.draw, fractal);
-    fractal.drawingmode.subscribe(fractal.draw, fractal);
+
+    var onsomethingchanged = function () {
+        save(fractal);
+        fractal.draw();
+    };
+    fractal.polygon().sides.subscribe(onsomethingchanged, fractal);
+    fractal.maxdepth.subscribe(onsomethingchanged, fractal);
+    fractal.pattern.subscribe(onsomethingchanged, fractal);
+    fractal.drawingmode.subscribe(onsomethingchanged, fractal);
     fractal.pattern.subscribe(ui.drawtemplate, fractal);
     fractal.draw();
     ui.drawtemplate();
@@ -44,7 +52,7 @@ $(function () {
     $("#btn-hdrendering").click(function () {
         // generate in good quality.
         // first, must define which quality (too much may crash browser)
-        var quality = 16;
+        var quality = 14;
         //switch (appViewModel.fractal().pattern().steps) {
         //    case 3: // 2 lines
         //        quality = 17;
@@ -68,6 +76,22 @@ $(function () {
     });
 
 });
+
+var save = function (fractal) {
+    localStorage.setItem("fractal", JSON.stringify(fractal.getdata()));
+}
+var load = function () {
+    var objfractal = null;
+    try {
+        var strdata = localStorage.getItem("fractal");
+        objfractal = JSON.parse(strdata);
+    }
+    catch (ex)
+    {
+        objfractal = null;
+    }
+    return objfractal;
+}
 
 /// AppViewModel ctor.
 var AppViewModel = function (appViewModelData) {

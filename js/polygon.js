@@ -4,17 +4,25 @@
     var init = function () {
 
     }
-    var sides = PolygonData.sides;
-    var width = PolygonData.width;
-    var padding = PolygonData.padding;
+    var sides = ko.observable(PolygonData.sides);
+    var width = ko.observable(PolygonData.width);
+    var padding = ko.observable(PolygonData.padding);
 
+    // returns object raw data for storage / initialization
+    var getdata = function () {
+        return {
+            'sides': sides(),
+            'width': width(),
+            'padding': padding()
+        }
+    };
     /// public
     return {
         // properties
-        'sides': ko.observable(sides),
-        'width': ko.observable(width),
-        'padding': ko.observable(padding)
+        'sides': sides,
+        'width': width,
+        'padding': padding,
         // methods
-
+        'getdata' : getdata
     };
 };
