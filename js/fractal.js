@@ -24,8 +24,10 @@
 
         for (var sideindex = 0; sideindex < sides; sideindex++) {
             // defines polygon line coordinates in a 1 unit long space (center at [0,0] ).
-            var fromAngle = Math.PI * ((sideindex + 1.5) * angle) / 180;
+            var fromAngle = Math.PI * ((sideindex - 0.5) * angle) / 180;
             var toAngle = Math.PI * ((sideindex + 0.5) * angle) / 180;
+            if (sides == 1)
+            { fromAngle = Math.PI; toAngle = 0; }
             var line_from = {
                 x: Math.cos(fromAngle),
                 y: Math.sin(fromAngle)
@@ -98,6 +100,7 @@
     // ko
     var polygon = ko.observable(new Polygon(data.polygon));
     var pattern = ko.observable(new Pattern(data.pattern));
+    var animation = ko.observable(new FractalAnimation(data.animation));
 
     // 3 pixels is the minmimum length for dividing a pattern, less than that, no more depth needed.
     var drawing_min_polarlength = 6 / (polygon().width() / 2 - (polygon().padding())) // drawable area
@@ -107,7 +110,8 @@
     var getdata = function () {
         return {
             'polygon': polygon().getdata(),
-            'pattern' : pattern().getdata()
+            'pattern': pattern().getdata(),
+            'animation': animation().getdata()
         }
     };
     var init = function () {
@@ -122,6 +126,7 @@
         'UIWidth': 800,
         'polygon': polygon,
         'pattern': pattern,
+        'animation': animation,
         'maxdepth': maxdepth,
         'drawingmode': drawingmode,
         // methods

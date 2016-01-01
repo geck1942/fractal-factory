@@ -53,7 +53,7 @@
                                     <span class="input-group-addon" data-bind="html: fractal().polygon().sides"></span>
                                     <input id="fractal-sides" type="range" placeholder="Polygon sides" class="form-control"
                                            data-bind="value: fractal().polygon().sides"
-                                           min="2" max="24">
+                                           min="1" max="24">
                                 </div>
 
                             </div>
@@ -70,7 +70,14 @@
 
                             </div>
                         </div>
-                        <canvas class="canvas" id="template-canvas" width="400" height="400"></canvas>
+                        <div class="row">
+                            <div class="col-xs-10">
+                                <canvas class="canvas" id="template-canvas" width="400" height="400"></canvas>
+                            </div>
+                            <div class="col-xs-2">
+                                PLOP    
+                            </div>
+                        </div>
                         <div role="form">
                             <label class="control-label" for="fractal-depth">Live preview (quality)</label>
                             <div class="form-group input-group">
@@ -87,6 +94,12 @@
                     <div class="panel-footer">
                         <span class="pull-left">View Details</span>
                         <span class="pull-right">
+                            <button type="button" class="btn btn-default"
+                                    id="btn-reset">
+                                <i class="fa fa-arrow-circle-down"></i> Reset
+                            </button>
+                        </span>
+                        <span class="pull-right">
                             <button type="button" class="btn btn-success"
                                     id="btn-hdrendering">
                                 <i class="fa fa-arrow-circle-right"></i> Generate
@@ -101,19 +114,47 @@
 
             </div>
             <div class="col-md-2">
-                <div class="panel panel-primary">
+                <div class="panel ">
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-3">
-                                <i class="fa fa-camera fa-4x"></i>
+                                <i class="fa fa-play fa-4x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
-                                <div class="huge">Gallery</div>
-                                <div>Check out some examples</div>
+                                <div class="huge">Animation</div>
+                                <div>Live !</div>
                             </div>
                         </div>
                     </div>
-                    <div class="panel">
+                    <div class="panel panel-settings">
+                        <div class="row" role="form">
+                            <div class="col-md-6">
+                                <label class="control-label" for="fractal-depth">Animated</label>
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon" data-bind="">
+                                        <input type="checkbox" value="1" data-bind="checked: fractal().animation().animated">
+                                    </span>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="panel-animation-advanced" class="panel panel-settings" data-bind="visible: fractal().animation().animated">
+                        <div class="row" role="form">
+                            <div class="col-md-6">
+                                <label class="control-label" for="fractal-sides">Drawing</label>
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon" data-bind="html: fractal().drawingmode() == 'dots' ? 'o' : '|'"></span>
+                                    <select id="fractal-drawingmode" class="form-control"
+                                            data-bind="value: fractal().drawingmode">
+                                        <option value="dots">Colored dots</option>
+                                        <option value="lines">Lines</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -129,6 +170,7 @@
     <script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- Fractals -->
     <script src="./js/pattern.js"></script>
+    <script src="./js/animation.js"></script>
     <script src="./js/polygon.js"></script>
     <script src="./js/fractal.js"></script>
     <script src="./js/ui.js"></script>

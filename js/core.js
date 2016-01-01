@@ -5,17 +5,21 @@ var defaultFractalData = {
         'width': 800,
         'padding': 100
     },
-    'pattern' : [
+    'pattern': [
         { x: 0, y: 0, color: "red" },
         { x: 10, y: 0, color: "orange" },
         { x: 12, y: -10, color: "yellow" },
         { x: 14, y: 0, color: "orange" },
         { x: 24, y: 0, color: "red" }
-    ]
+    ],
+    'animation': {
+        'animated' : false
+    }
 }
 
+var FCanvas;
 $(function () {
-    var FCanvas = $("#fractal-canvas");
+    FCanvas = $("#fractal-canvas");
     FCanvas.css({
         'height': FCanvas.width()
     });
@@ -74,6 +78,10 @@ $(function () {
             quality--;
         appViewModel.fractal().draw(null, quality);
     });
+    $("#btn-reset").click(function () {
+        // reset fractal
+        reset();
+    });
 
 });
 
@@ -84,13 +92,15 @@ var load = function () {
     var objfractal = null;
     try {
         var strdata = localStorage.getItem("fractal");
-        objfractal = JSON.parse(strdata);
+        //objfractal = JSON.parse(strdata);
     }
-    catch (ex)
-    {
+    catch (ex) {
         objfractal = null;
     }
     return objfractal;
+}
+var reset = function () {
+    appViewModel.fractal(new Fractal(FCanvas, defaultFractalData));
 }
 
 /// AppViewModel ctor.

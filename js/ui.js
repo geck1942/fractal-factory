@@ -67,7 +67,7 @@
         };
     }
     var drawtemplate = function () {
-        var pattern = appViewModel.fractal().pattern().data();
+        var pattern = appViewModel.fractal().pattern().getdata();
         // draw grid for pattern template
         ctx.clearRect(0, 0, linetemplateWidth, linetemplateWidth);
         ctx.strokeStyle = "gray";
@@ -97,7 +97,7 @@
         ctx.lineWidth = 2
         ctx.beginPath();
         for (var i = 0; i < pattern.length; i++) {
-            var coords = getTemplateIMGCoordinates(pattern[i].x(), pattern[i].y());
+            var coords = getTemplateIMGCoordinates(pattern[i].x, pattern[i].y);
             if (i == 0)
                 ctx.moveTo(coords.x, coords.y);
             else
@@ -107,9 +107,9 @@
 
         // draw handles
         for (var i = 0; i < pattern.length; i++) {
-            var coords = getTemplateIMGCoordinates(pattern[i].x(), pattern[i].y());
+            var coords = getTemplateIMGCoordinates(pattern[i].x, pattern[i].y);
             ctx.beginPath();
-            ctx.fillStyle = pattern[i].color();
+            ctx.fillStyle = pattern[i].color;
             if (templatedragindex == i) {
                 // this handle is being moved by user: highlight
                 ctx.lineWidth = 4
@@ -127,10 +127,10 @@
     var init = function () {
         element.on("mousedown", function (evt, data) {
             var linecoord = getTemplateLineCoordinates(evt.offsetX, evt.offsetY);
-            var pattern = appViewModel.fractal().pattern().data();
+            var pattern = appViewModel.fractal().pattern().getdata();
 
             for (var i = 0; i < pattern.length; i++) {
-                if (pattern[i].x() == linecoord.x && pattern[i].y() == linecoord.y) {
+                if (pattern[i].x == linecoord.x && pattern[i].y == linecoord.y) {
                     // user clicked on an existing point.
                     // declare drag and drop
                     templatedragindex = i
@@ -141,18 +141,18 @@
                 // user clicked on whitespace.
                 // find a place to add a new point.
                 for (var i = 1; i < pattern.length; i++) {
-                    if ((pattern[i - 1].x() <= linecoord.x && pattern[i].x() >= linecoord.x
-                            || pattern[i - 1].x() >= linecoord.x && pattern[i].x() <= linecoord.x)
-                     && (pattern[i - 1].y() <= linecoord.y && pattern[i].y() >= linecoord.y
-                            || pattern[i - 1].y() >= linecoord.y && pattern[i].y() <= linecoord.y)) {
+                    if ((pattern[i - 1].x <= linecoord.x && pattern[i].x >= linecoord.x
+                            || pattern[i - 1].x >= linecoord.x && pattern[i].x <= linecoord.x)
+                     && (pattern[i - 1].y <= linecoord.y && pattern[i].y >= linecoord.y
+                            || pattern[i - 1].y >= linecoord.y && pattern[i].y <= linecoord.y)) {
                         // insert a new dot here.
-                        pattern.splice(i, 0, new PatternStep({
+                        appViewModel.fractal().pattern().data.splice(i, 0, new PatternStep({
                             'x': linecoord.x,
                             'y': linecoord.y,
-                            'color': pattern[i - 1].color()
+                            'color': pattern[i - 1].color
                         }));
                         templatedragindex = i;
-                        appViewModel.fractal().pattern.notifySubscribers(appViewModel.fractal().pattern());
+                        //appViewModel.fractal().pattern.notifySubscribers(appViewModel.fractal().pattern());
                         break;
                     }
                 }
@@ -161,6 +161,7 @@
         });
         element.on("mousemove", function (evt, data) {
             var linecoord = getTemplateLineCoordinates(evt.offsetX, evt.offsetY);
+
             if (templatedragindex != null) {
                 // arlready doing drag and drop
                 if (linecoord.x < 0 || linecoord.x > 24 || linecoord.y < -12 || linecoord.y > 12) {
@@ -189,8 +190,8 @@
             }
             else
             {
-                for (var i = 0; i < pattern.length; i++) {
-                    if (pattern[i].x() == linecoord.x && pattern[i].y() == linecoord.y) {
+                for (var i = 0; i < appViewModel.fractal().pattern.length; i++) {
+                    if (appViewModel.fractal().pattern[i].x() == linecoord.x && appViewModel.fractal().pattern[i].y() == linecoord.y) {
                         // user mouse moved on an existing point.
                         // highlight it
                         templatedragindex = i

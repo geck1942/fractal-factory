@@ -38,10 +38,10 @@
             // transforms the [-1 1, -1 1] space to the parent line space.
             newposition.x = lineorigin.x
                    + patternStepData.x * linelength * Math.cos(lineangle)
-                   + patternStepData.y * linelength * Math.cos(lineangle - Math.PI / 2);
+                   + patternStepData.y * linelength * Math.cos(lineangle + Math.PI / 2);
             newposition.y = lineorigin.y
                + patternStepData.x * linelength * Math.sin(lineangle)
-               + patternStepData.y * linelength * Math.sin(lineangle - Math.PI / 2);
+               + patternStepData.y * linelength * Math.sin(lineangle + Math.PI / 2);
 
             patternStepData.x = newposition.x;
             patternStepData.y = newposition.y;
