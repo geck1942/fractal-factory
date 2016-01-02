@@ -18,6 +18,8 @@ var defaultFractalData = {
 }
 
 var FCanvas;
+var ui;
+
 $(function () {
     FCanvas = $("#fractal-canvas");
     FCanvas.css({
@@ -28,7 +30,7 @@ $(function () {
         'height': templateCanvas.width()
     });
 
-    var ui = new UI(templateCanvas);
+    ui = new UI(templateCanvas);
 
     var fractalData = load() || defaultFractalData;
     var fractal = new Fractal(FCanvas, fractalData);
@@ -40,14 +42,6 @@ $(function () {
 
     ko.applyBindings(appViewModel);
 
-    var onsomethingchanged = function () {
-        save(fractal);
-        fractal.draw();
-    };
-    fractal.polygon().sides.subscribe(onsomethingchanged, fractal);
-    fractal.maxdepth.subscribe(onsomethingchanged, fractal);
-    fractal.pattern.subscribe(onsomethingchanged, fractal);
-    fractal.drawingmode.subscribe(onsomethingchanged, fractal);
     fractal.pattern.subscribe(ui.drawtemplate, fractal);
     fractal.draw();
     ui.drawtemplate();
@@ -85,14 +79,17 @@ $(function () {
 
 });
 
-var save = function (fractal) {
-    localStorage.setItem("fractal", JSON.stringify(fractal.getdata()));
+var save = function (data) {
+    localStorage.setItem("fractal", JSON.stringify(data));
 }
 var load = function () {
     var objfractal = null;
     try {
         var strdata = localStorage.getItem("fractal");
-        //objfractal = JSON.parse(strdata);
+        objfractal = JSON.parse(strdata);
+        if (objfractal.polygon == null) throw ("fractal should contain polygon");
+        if (objfractal.pattern == null) throw ("fractal should contain pattern");
+        if (objfractal.animation == null) throw ("fractal should contain animation");
     }
     catch (ex) {
         objfractal = null;
@@ -100,7 +97,11 @@ var load = function () {
     return objfractal;
 }
 var reset = function () {
-    appViewModel.fractal(new Fractal(FCanvas, defaultFractalData));
+    var fractal = new Fractal(FCanvas, defaultFractalData);
+    appViewModel.fractal(fractal);
+    fractal.pattern.subscribe(ui.drawtemplate, fractal);
+    fractal.draw();
+    ui.drawtemplate();
 }
 
 /// AppViewModel ctor.

@@ -5,6 +5,10 @@
     var element = jQueryCanvasElement;
     var ctx = element[0].getContext("2d");
     var drawingmode = ko.observable("dots");
+    var onsomethingchanged = function () {
+        save(getdata());
+        draw();
+    };
     var draw = function (foo, forcedmaxdepth) {
         draw_clearpolygon();
         draw_polygon(forcedmaxdepth || maxdepth());
@@ -116,7 +120,12 @@
     };
     var init = function () {
 
+        polygon().sides.subscribe(onsomethingchanged, that);
+        maxdepth.subscribe(onsomethingchanged, that);
+        pattern.subscribe(onsomethingchanged, that);
+        drawingmode.subscribe(onsomethingchanged, that);
     }();
+
     /// public
     return {
         // properties

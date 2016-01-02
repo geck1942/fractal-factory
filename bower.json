@@ -14,7 +14,7 @@
   "ignore": [
     "**/.*",
     "/.vs",
-    "bower_components",
+    "bower_components/*",
     "fractal factory.sln",
     "/web.config*",
     "test",

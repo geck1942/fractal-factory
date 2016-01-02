@@ -4,6 +4,8 @@
     var linetemplateWidth = JQuerylineCanvas.attr("width");
     var linetemplateUIWidth = JQuerylineCanvas.width();
     var linetemplateMargin = 20;
+    var pattern_selectedPin = ko.observable(null);
+
     var grid = function () {
         var gridSize = 24;
         this.origin = {
@@ -110,7 +112,7 @@
             var coords = getTemplateIMGCoordinates(pattern[i].x, pattern[i].y);
             ctx.beginPath();
             ctx.fillStyle = pattern[i].color;
-            if (templatedragindex == i) {
+            if (pattern_selectedPin() == i) {
                 // this handle is being moved by user: highlight
                 ctx.lineWidth = 4
                 ctx.arc(coords.x, coords.y, 10, 0, 2 * Math.PI);
@@ -124,15 +126,29 @@
             ctx.fill();
         }
     };
+    var deletePin = function (sender, evt, pintodelete) {
+        if (!pintodelete > 0) // if not integer
+            pintodelete = pattern_selectedPin();
+        if (pintodelete > 0 && pintodelete < appViewModel.fractal().pattern().data().length)
+        {
+            appViewModel.fractal().pattern().data.splice(pintodelete, 1);
+            appViewModel.fractal().pattern.notifySubscribers(appViewModel.fractal().pattern);
+        }
+    };
     var init = function () {
+
         element.on("mousedown", function (evt, data) {
             var linecoord = getTemplateLineCoordinates(evt.offsetX, evt.offsetY);
             var pattern = appViewModel.fractal().pattern().getdata();
 
             for (var i = 0; i < pattern.length; i++) {
-                if (pattern[i].x == linecoord.x && pattern[i].y == linecoord.y) {
+                if (pattern[i].x >= linecoord.x - 1
+                    && pattern[i].x <= linecoord.x + 1
+                    && pattern[i].y >= linecoord.y - 1
+                    && pattern[i].y <= linecoord.y + 1) {
                     // user clicked on an existing point.
-                    // declare drag and drop
+                    // declare selected pin and for drag and drop
+                    pattern_selectedPin(i);
                     templatedragindex = i
                     break;
                 }
@@ -152,11 +168,11 @@
                             'color': pattern[i - 1].color
                         }));
                         templatedragindex = i;
+                        pattern_selectedPin(i);
                         //appViewModel.fractal().pattern.notifySubscribers(appViewModel.fractal().pattern());
                         break;
                     }
                 }
-
             }
         });
         element.on("mousemove", function (evt, data) {
@@ -166,7 +182,7 @@
                 // arlready doing drag and drop
                 if (linecoord.x < 0 || linecoord.x > 24 || linecoord.y < -12 || linecoord.y > 12) {
                     // dot is out of bounds. delete it
-                    appViewModel.fractal().pattern().data.splice(templatedragindex, 1);
+                    deletePin(null, null, templatedragindex);
                     templatedragindex = null;
                 }
                 else {
@@ -204,15 +220,20 @@
         element.on("mouseup mouseout", function (evt, data) {
             templatedragindex = null;
         });
+
+        pattern_selectedPin.subscribe(drawtemplate, that);
+
     }();
 
     /// public
     return {
         // properties
+        'getTemplateIMGCoordinates': getTemplateIMGCoordinates,
+        'getTemplateLineCoordinates': getTemplateLineCoordinates,
+        // methods
         'init': init,
         'drawtemplate': drawtemplate,
-        'getTemplateIMGCoordinates': getTemplateIMGCoordinates,
-        'getTemplateLineCoordinates': getTemplateLineCoordinates
+        'deletePin': deletePin
     };
 };
 
