@@ -1,7 +1,8 @@
 ﻿var appViewModel;
 var defaultFractalData = {
     'polygon': {
-        'sides' : 6,
+        'sides': 6,
+        'drawingmode': 'dots',
         'width': 800,
         'padding': 100
     },
@@ -10,7 +11,7 @@ var defaultFractalData = {
         { x: 10, y: 0, color: "orange" },
         { x: 12, y: -10, color: "yellow" },
         { x: 14, y: 0, color: "orange" },
-        { x: 24, y: 0, color: "red" }
+        { x: 24, y: 0, color: "red" } // last pattern
     ],
     'animation': {
         'animated' : false
@@ -76,6 +77,10 @@ $(function () {
         // reset fractal
         reset();
     });
+    $("#btn-randomize").click(function () {
+        // randomize fractal
+        randomize();
+    });
 
 });
 
@@ -96,16 +101,51 @@ var load = function () {
     }
     return objfractal;
 }
-var reset = function () {
-    var fractal = new Fractal(FCanvas, defaultFractalData);
-    appViewModel.fractal(fractal);
-    fractal.pattern.subscribe(ui.drawtemplate, fractal);
-    fractal.draw();
+var init = function (newFractal) {
+    appViewModel.fractal(newFractal);
+    newFractal.pattern.subscribe(ui.drawtemplate, newFractal);
+    newFractal.draw();
     ui.drawtemplate();
+}
+var reset = function () {
+    init(new Fractal(FCanvas, defaultFractalData));
+}
+var randomize = function () {
+    init(new Fractal(FCanvas, randomFractal()));
 }
 
 /// AppViewModel ctor.
 var AppViewModel = function (appViewModelData) {
     /// public
     this.fractal = ko.observable(appViewModelData.fractal);
+    this.gallery = ko.observableArray(appViewModelData.gallery);
 };
+
+var randomFractal = function () {
+    var randomcolors = ['black', 'gray', 'white',
+                        'red', 'orange', 'yellow',
+                        'lime', 'green', 'chartreuse',
+                        'blue', 'lightblue', 'turquoise',
+                        'pink', 'brown', 'purple']
+    var ranint = function (min, max) {
+        return Math.round(Math.random() * (max - min),0) + min;
+    }
+    return {
+        'polygon': {
+            'sides': ranint(1, 8),
+            'drawingmode': ranint(0, 1) == 0 ? 'dots' : 'lines',
+            'width': 800,
+            'padding': 100
+        },
+        'pattern': [
+            { x: 0, y: 0, color: randomcolors[ranint(0, randomcolors.length-1)] },
+            { x: ranint(0, 24), y: ranint(-12, 12), color: randomcolors[ranint(0, randomcolors.length - 1)] },
+            { x: ranint(0, 24), y: ranint(-12, 12), color: randomcolors[ranint(0, randomcolors.length - 1)] },
+            { x: ranint(0, 24), y: ranint(-12, 12), color: randomcolors[ranint(0, randomcolors.length - 1)] },
+            { x: 24, y: 0, color: randomcolors[ranint(0, randomcolors.length - 1)] }
+        ],
+        'animation': {
+            'animated': false
+        }
+    };
+}

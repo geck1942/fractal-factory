@@ -4,7 +4,6 @@
     var maxdepth = ko.observable(4);
     var element = jQueryCanvasElement;
     var ctx = element[0].getContext("2d");
-    var drawingmode = ko.observable("dots");
     var onsomethingchanged = function () {
         save(getdata());
         draw();
@@ -63,7 +62,7 @@
     };
     // draw a pattern representation. 1 unit long space (center at [0,0] ).
     var draw_pattern = function (patternDataArray, depth) {
-        switch (drawingmode()) {
+        switch (polygon().drawingmode()) {
             case "dots":
                 for (var i = 0; i < patternDataArray.length; i++) {
 
@@ -121,9 +120,9 @@
     var init = function () {
 
         polygon().sides.subscribe(onsomethingchanged, that);
+        polygon().drawingmode.subscribe(onsomethingchanged, that);
         maxdepth.subscribe(onsomethingchanged, that);
         pattern.subscribe(onsomethingchanged, that);
-        drawingmode.subscribe(onsomethingchanged, that);
     }();
 
     /// public
@@ -137,7 +136,7 @@
         'pattern': pattern,
         'animation': animation,
         'maxdepth': maxdepth,
-        'drawingmode': drawingmode,
+        //'drawingmode': drawingmode,
         // methods
         'draw': draw,
         'getdata' : getdata,

@@ -5,6 +5,7 @@
 
     }
     var sides = ko.observable(PolygonData.sides);
+    var drawingmode = ko.observable(PolygonData.drawingmode);
     var width = ko.observable(PolygonData.width);
     var padding = ko.observable(PolygonData.padding);
 
@@ -20,6 +21,7 @@
     return {
         // properties
         'sides': sides,
+        'drawingmode': drawingmode,
         'width': width,
         'padding': padding,
         // methods

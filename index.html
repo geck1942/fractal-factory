@@ -60,9 +60,9 @@
                             <div class="col-md-6">
                                 <label class="control-label" for="fractal-sides">Drawing</label>
                                 <div class="form-group input-group">
-                                    <span class="input-group-addon" data-bind="html: fractal().drawingmode() == 'dots' ? 'o' : '|'"></span>
+                                    <span class="input-group-addon" data-bind="html: fractal().polygon().drawingmode() == 'dots' ? 'o' : '|'"></span>
                                     <select id="fractal-drawingmode" class="form-control"
-                                           data-bind="value: fractal().drawingmode">
+                                           data-bind="value: fractal().polygon().drawingmode">
                                         <option value="dots">Colored dots</option>
                                         <option value="lines">Lines</option>
                                     </select>
@@ -71,13 +71,13 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-10">
+                            <div class="col-xs-9">
                                 <canvas class="canvas" id="template-canvas" width="400" height="400"></canvas>
                             </div>
-                            <div class="col-xs-2">
+                            <div class="col-xs-3">
                                 <button type="button"
                                         data-bind="click: ui.deletePin"
-                                        class="btn btn-default"><i class="fa fa-remove"></i></button>
+                                        class="btn btn-default"><i class="fa fa-remove"></i> remove</button>
                             </div>
                         </div>
                         <div role="form">
@@ -94,7 +94,12 @@
                         </div>
                     </div>
                     <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
+                        <span class="pull-right">
+                            <button type="button" class="btn btn-warning"
+                                    id="btn-randomize">
+                                <i class="fa fa-star-o"></i> Randomize
+                            </button>
+                        </span>
                         <span class="pull-right">
                             <button type="button" class="btn btn-default"
                                     id="btn-reset">
@@ -147,9 +152,9 @@
                             <div class="col-md-6">
                                 <label class="control-label" for="fractal-sides">Drawing</label>
                                 <div class="form-group input-group">
-                                    <span class="input-group-addon" data-bind="html: fractal().drawingmode() == 'dots' ? 'o' : '|'"></span>
+                                    <span class="input-group-addon" data-bind="html: fractal().polygon().drawingmode() == 'dots' ? 'o' : '|'"></span>
                                     <select id="fractal-drawingmode" class="form-control"
-                                            data-bind="value: fractal().drawingmode">
+                                            data-bind="value: fractal().polygon().drawingmode">
                                         <option value="dots">Colored dots</option>
                                         <option value="lines">Lines</option>
                                     </select>
