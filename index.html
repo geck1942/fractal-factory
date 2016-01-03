@@ -57,7 +57,7 @@
                                 </div>
 
                             </div>
-                            <div class="col-md-6">
+                            <!--<div class="col-md-6">
                                 <label class="control-label" for="fractal-sides">Drawing</label>
                                 <div class="form-group input-group">
                                     <span class="input-group-addon" data-bind="html: fractal().polygon().drawingmode() == 'dots' ? 'o' : '|'"></span>
@@ -68,7 +68,7 @@
                                     </select>
                                 </div>
 
-                            </div>
+                            </div>-->
                         </div>
                         <div class="row">
                             <div class="col-xs-9">
@@ -150,15 +150,17 @@
                     <div id="panel-animation-advanced" class="panel panel-settings" data-bind="visible: fractal().animation().animated">
                         <div class="row" role="form">
                             <div class="col-md-6">
-                                <label class="control-label" for="fractal-sides">Drawing</label>
-                                <div class="form-group input-group">
-                                    <span class="input-group-addon" data-bind="html: fractal().polygon().drawingmode() == 'dots' ? 'o' : '|'"></span>
-                                    <select id="fractal-drawingmode" class="form-control"
-                                            data-bind="value: fractal().polygon().drawingmode">
-                                        <option value="dots">Colored dots</option>
-                                        <option value="lines">Lines</option>
-                                    </select>
-                                </div>
+                                <button type="button" class="btn btn-default"
+                                        data-bind="click: fractal().play">
+                                    <i class="fa-play-circle-o"></i> Play
+                                </button>
+
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-default"
+                                        data-bind="click: fractal().stop">
+                                    <i class="fa-stop-circle-o"></i> Stop
+                                </button>
 
                             </div>
                         </div>

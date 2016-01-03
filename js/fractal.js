@@ -1,18 +1,59 @@
 ﻿var Fractal = function (jQueryCanvasElement, data) {
     /// private
     var that = this;
-    var maxdepth = ko.observable(4);
+    var maxdepth = ko.observable(6);
+    var camera = {
+        'zoom': 1,
+        'rotation': 0,
+        'translation': {
+            x: 0,
+            y: 0
+        }
+    };
     var element = jQueryCanvasElement;
+    var playing = null;
     var ctx = element[0].getContext("2d");
     var onsomethingchanged = function () {
-        save(getdata());
+        stop();
         draw();
+        save(getdata());
+    };
+    var play = function () {
+        playing = setInterval(function () {
+            animation().nextframe();
+            draw();
+        }, 200);
+    };
+    var stop = function () {
+        clearTimeout(playing);
     };
     var draw = function (foo, forcedmaxdepth) {
+        ctx.save();
         draw_clearpolygon();
-        draw_polygon(forcedmaxdepth || maxdepth());
+
+        // update the patter location with the camera modifier.
+        camera = getcamera();
+        ctx.translate(camera.translation.x, camera.translation.y);
+        ctx.rotate(camera.rotation);
+        ctx.scale(camera.zoom, camera.zoom);
+        draw_debug();
+
+        //if (animation().animated())
+        //    draw_flatpolygon(forcedmaxdepth || maxdepth());
+        //else
+            draw_polygon(forcedmaxdepth || maxdepth());
+        ctx.restore();
     };
 
+    var draw_debug = function () {
+        ctx.beginPath();
+        ctx.fillStyle = 'white';
+        ctx.moveTo(-1, 0);
+        ctx.lineTo(1, 0);
+        ctx.moveTo(0, -1);
+        ctx.lineTo(0, 1);
+        ctx.stroke();
+    };
     // draw the fractal in the jQueryCanvasElement HTML canvas.
     var draw_clearpolygon = function () {
         ctx.clearRect(0, 0, polygon().width(), polygon().width());
@@ -42,6 +83,11 @@
             draw_segment(line_from, line_to, 0, forcedmaxdepth);
         }
     };
+    // draw the fractal for animation in the jQueryCanvasElement HTML canvas.
+    var draw_flatpolygon = function (forcedmaxdepth) {
+        draw_segment({ x: -1, y: 0 }, { x: 0, y: 0 }, 0, forcedmaxdepth);
+        draw_segment({ x: 0, y: 0 }, { x: 1, y: 0 }, 0, forcedmaxdepth);
+    };
     // draw a fractal segment. Depending the current depth, the segment will be splitted in 
     // sub segments (recursivity) or drawn as a single line (end of recursivity)
     var draw_segment = function (line_from, line_to, depth, forcedmaxdepth) {
@@ -62,41 +108,93 @@
     };
     // draw a pattern representation. 1 unit long space (center at [0,0] ).
     var draw_pattern = function (patternDataArray, depth) {
-        switch (polygon().drawingmode()) {
-            case "dots":
+        var depthpct = depth / maxdepth();
+        //switch (polygon().drawingmode()) {
+        //    case "dots":
                 for (var i = 0; i < patternDataArray.length; i++) {
 
+                    // set color for the dot
                     ctx.fillStyle = patternDataArray[i].color;
-                    var IMG_location = drawing_getImageCoordinates(patternDataArray[i].x, patternDataArray[i].y);
+                    //var IMG_location = drawing_getImageCoordinates(patternDataArray[i].x, patternDataArray[i].y);
                     ctx.beginPath();
-                    ctx.arc(IMG_location.x, IMG_location.y, 1, 0, 2 * Math.PI);
+                    ctx.arc(patternDataArray[i].x, patternDataArray[i].y, 2 * depthpct / camera.zoom, 0, 2 * Math.PI);
                     ctx.fill();
                 }
-                break;
-            case "lines":
-                ctx.beginPath();
-                for (var i = 0; i < patternDataArray.length; i++) {
-                    var IMG_location = drawing_getImageCoordinates(patternDataArray[i].x, patternDataArray[i].y);
-                    ctx.strokeStyle = patternDataArray[i].color;
-                    if (i == 0)
-                        ctx.moveTo(IMG_location.x, IMG_location.y);
-                    else
-                        ctx.lineTo(IMG_location.x, IMG_location.y);
-                    ctx.stroke();
-                }
-                break;
-        }
+                //break;
+        //    case "lines":
+        //        ctx.beginPath();
+        //        for (var i = 0; i < patternDataArray.length; i++) {
+        //            var IMG_location = drawing_getImageCoordinates(patternDataArray[i].x, patternDataArray[i].y);
+        //            ctx.strokeStyle = patternDataArray[i].color;
+        //            if (i == 0)
+        //                ctx.moveTo(IMG_location.x, IMG_location.y);
+        //            else
+        //                ctx.lineTo(IMG_location.x, IMG_location.y);
+        //            ctx.stroke();
+        //        }
+        //        break;
+        //}
 
     };
-    // return the x/y coordinates of the picture from a 1 unit long space coordinates.
-    var drawing_getImageCoordinates = function (polar_x, polar_y) {
+    //// return the x/y coordinates of the picture from a 1 unit long space coordinates.
+    //var drawing_getImageCoordinates = function (polar_x, polar_y) {
+    //    var width = polygon().width();
+    //    var height = width; // square
+    //    var padding = polygon().padding();
+    //    return {
+    //        x: polar_x * (width - padding) / 2,
+    //        y: polar_y * (width - padding) / 2
+    //    };
+    //};
+
+    // gets the camera position for movement effect
+    var getcamera = function () {
+        //
         var width = polygon().width();
         var height = width; // square
         var padding = polygon().padding();
-        return {
-            x: (width / 2) + polar_x * (width - padding) / 2,
-            y: (width / 2) + polar_y * (width - padding) / 2
-        };
+        if (animation().animated())
+        {
+            // animation is made in N steps, where we move from
+            // a segment bounds to the bounds of the first sub segment.
+            // it creates a zoom and a rotation, then loop is repeated.
+            // So, the scale factor (rotataion, zoom) is applied accordingly
+            // where we are in the animation timeline.
+            var coeff = animation().framepct();
+            var origin_pattern = pattern().applyPattern({ x: 0, y: 0 }, { x: 1, y: 0 })
+            var origin_from = origin_pattern[0];
+            var origin_to = origin_pattern[1];
+            var origin_angle = Math.atan2(origin_to.y - origin_from.y, origin_to.x - origin_from.x);
+            var origin_length = Math.sqrt(Math.pow(origin_to.y - origin_from.y, 2) + Math.pow(origin_to.x - origin_from.x, 2));
+
+            var destination_pattern = pattern().applyPattern(origin_from, origin_to)
+            var destination_from = destination_pattern[0];
+            var destination_to = destination_pattern[1];
+            var destination_angle = Math.atan2(destination_to.y - destination_from.y, destination_to.x - destination_from.x);
+            var destination_legnth = Math.sqrt(Math.pow(destination_to.y - destination_from.y, 2) + Math.pow(destination_to.x - destination_from.x, 2));
+
+            var scale_required = destination_legnth / origin_length;
+
+            return {
+                'zoom': (width - padding) * (coeff*(scale_required - 1) + 1),
+                'rotation': origin_angle + (destination_angle - origin_angle) * coeff,
+                'translation': { // translation is based on the canvas size.
+                    x: (width / 2),
+                    y: (width / 2)
+                }
+            };
+        }
+        else {
+            // if there is no animation, default value
+            return {
+                'zoom': (width - padding),
+                'rotation': 0,
+                'translation': { // translation is based on the canvas size.
+                    x: (width / 2),
+                    y: (width / 2)
+                }
+            };
+        }
     };
 
 
@@ -121,6 +219,7 @@
 
         polygon().sides.subscribe(onsomethingchanged, that);
         polygon().drawingmode.subscribe(onsomethingchanged, that);
+        animation.subscribe(onsomethingchanged, that);
         maxdepth.subscribe(onsomethingchanged, that);
         pattern.subscribe(onsomethingchanged, that);
     }();
@@ -138,6 +237,8 @@
         'maxdepth': maxdepth,
         //'drawingmode': drawingmode,
         // methods
+        'play': play,
+        'stop': stop,
         'draw': draw,
         'getdata' : getdata,
         'init': init

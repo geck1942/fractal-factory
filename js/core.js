@@ -11,7 +11,7 @@ var defaultFractalData = {
         { x: 10, y: 0, color: "orange" },
         { x: 12, y: -10, color: "yellow" },
         { x: 14, y: 0, color: "orange" },
-        { x: 24, y: 0, color: "red" } // last pattern
+        { x: 24, y: 0, color: "red" } // last pattern point. must have the same color as first
     ],
     'animation': {
         'animated' : false
