@@ -116,9 +116,12 @@
                     // set color for the dot
                     ctx.fillStyle = patternDataArray[i].color;
                     //var IMG_location = drawing_getImageCoordinates(patternDataArray[i].x, patternDataArray[i].y);
-                    ctx.beginPath();
-                    ctx.arc(patternDataArray[i].x, patternDataArray[i].y, 2 * depthpct / camera.zoom, 0, 2 * Math.PI);
-                    ctx.fill();
+                    //ctx.beginPath();
+                    //if (polygon().zoom() == 1)
+                        ctx.fillRect(patternDataArray[i].x, patternDataArray[i].y, polygon().zoom() / polygon().width(), polygon().zoom() / polygon().width());
+                    //else
+                     //   ctx.arc(patternDataArray[i].x, patternDataArray[i].y, polygon().zoom() / polygon().width() / 2, 0, 2 * Math.PI);
+                    //ctx.fill();
                 }
                 //break;
         //    case "lines":
@@ -152,7 +155,6 @@
         //
         var width = polygon().width();
         var height = width; // square
-        var padding = polygon().padding();
         if (animation().animated())
         {
             // animation is made in N steps, where we move from
@@ -176,7 +178,7 @@
             var scale_required = destination_legnth / origin_length;
 
             return {
-                'zoom': (width - padding) * (coeff*(scale_required - 1) + 1),
+                'zoom': (width) * (coeff*(scale_required - 1) + 1),
                 'rotation': origin_angle + (destination_angle - origin_angle) * coeff,
                 'translation': { // translation is based on the canvas size.
                     x: (width / 2),
@@ -187,7 +189,7 @@
         else {
             // if there is no animation, default value
             return {
-                'zoom': (width - padding),
+                'zoom': (width  * polygon().zoom() / 2),
                 'rotation': 0,
                 'translation': { // translation is based on the canvas size.
                     x: (width / 2),
@@ -204,7 +206,7 @@
     var animation = ko.observable(new FractalAnimation(data.animation));
 
     // 3 pixels is the minmimum length for dividing a pattern, less than that, no more depth needed.
-    var drawing_min_polarlength = 6 / (polygon().width() / 2 - (polygon().padding())) // drawable area
+    var drawing_min_polarlength = 3 / (polygon().width() / 2) // drawable area
 
 
     // returns object raw data for storage / initialization
@@ -218,6 +220,7 @@
     var init = function () {
 
         polygon().sides.subscribe(onsomethingchanged, that);
+        polygon().zoom.subscribe(onsomethingchanged, that);
         polygon().drawingmode.subscribe(onsomethingchanged, that);
         animation.subscribe(onsomethingchanged, that);
         maxdepth.subscribe(onsomethingchanged, that);

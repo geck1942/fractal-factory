@@ -24,12 +24,11 @@
 </head>
 <body>
     <div id="wrapper">
-        <div class="row">
+        <!--<div class="row">
             <div class="col-lg-12">
                 <h1 class="page-header">Fractal Factory</h1>
             </div>
-            <!-- /.col-lg-12 -->
-        </div>
+        </div>-->
         <!-- /.row -->
         <div class="row">
             <div class="col-md-4">
@@ -46,48 +45,32 @@
                         </div>
                     </div>
                     <div class="panel panel-settings">
-                        <div class="row" role="form">
-                            <div class="col-md-6">
-                                <label class="control-label" for="fractal-sides">Polygon sides</label>
-                                <div class="form-group input-group">
-                                    <span class="input-group-addon" data-bind="html: fractal().polygon().sides"></span>
-                                    <input id="fractal-sides" type="range" placeholder="Polygon sides" class="form-control"
-                                           data-bind="value: fractal().polygon().sides"
-                                           min="1" max="24">
-                                </div>
-
-                            </div>
-                            <!--<div class="col-md-6">
-                                <label class="control-label" for="fractal-sides">Drawing</label>
-                                <div class="form-group input-group">
-                                    <span class="input-group-addon" data-bind="html: fractal().polygon().drawingmode() == 'dots' ? 'o' : '|'"></span>
-                                    <select id="fractal-drawingmode" class="form-control"
-                                           data-bind="value: fractal().polygon().drawingmode">
-                                        <option value="dots">Colored dots</option>
-                                        <option value="lines">Lines</option>
-                                    </select>
-                                </div>
-
-                            </div>-->
+                        <div class="form-group input-group" data-bind="visible: ui.pattern_selectedPin() != null">
+                            <button type="button"
+                                    data-bind="click: ui.deletePin, enabled: ui.pattern_selectedPin"
+                                    class="btn btn-default">
+                                <i class="fa fa-remove"></i>
+                            </button>
                         </div>
-                        <div class="row">
+                        <div class="form-group input-group" data-bind="foreach: colors, visible: ui.pattern_selectedPin() != null">
+                            <button type="button"
+                                    data-bind="style: {'background-color' : name }, click : ui.setPinColor"
+                                    class="btn btn-default">
+                            </button>
+                        </div>
+                        <canvas class="canvas" id="template-canvas" width="400" height="400"></canvas>
+                        <!--<div class="row">
                             <div class="col-xs-9">
-                                <canvas class="canvas" id="template-canvas" width="400" height="400"></canvas>
                             </div>
                             <div class="col-xs-3">
-                                <button type="button"
-                                        data-bind="click: ui.deletePin"
-                                        class="btn btn-default"><i class="fa fa-remove"></i> remove</button>
                             </div>
-                        </div>
+                        </div>-->
                         <div role="form">
                             <label class="control-label" for="fractal-depth">Live preview (quality)</label>
                             <div class="form-group input-group">
-                                <span class="input-group-addon" data-bind="">
-                                    <input type="checkbox" value="1" checked="checked" data-bind="checked: true">
-                                </span>
+                                <span class="input-group-addon" data-bind="html: fractal().maxdepth"></span>
                                 <input id="fractal-depth" type="range" placeholder="Depth"
-                                       data-bind="value: fractal().maxdepth, enabled: true"
+                                       data-bind="value: fractal().maxdepth"
                                        min="0" max="7">
 
                             </div>
@@ -117,7 +100,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <canvas class="canvas" id="fractal-canvas" width="800" height="800"></canvas>
+                <canvas class="canvas" id="fractal-canvas" width="1280" height="1280"></canvas>
 
             </div>
             <div class="col-md-2">
@@ -134,17 +117,28 @@
                         </div>
                     </div>
                     <div class="panel panel-settings">
-                        <div class="row" role="form">
-                            <div class="col-md-6">
-                                <label class="control-label" for="fractal-depth">Animated</label>
-                                <div class="form-group input-group">
-                                    <span class="input-group-addon" data-bind="">
-                                        <input type="checkbox" value="1" data-bind="checked: fractal().animation().animated">
-                                    </span>
+                        <label class="control-label" for="fractal-sides">Polygon sides</label>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon" data-bind="html: fractal().polygon().sides"></span>
+                            <input id="fractal-sides" type="range" placeholder="Polygon sides" class="form-control"
+                                   data-bind="value: fractal().polygon().sides"
+                                   min="1" max="24">
+                        </div>
+                        <label class="control-label" for="fractal-depth">Zoom</label>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon" data-bind="html: fractal().polygon().zoom"></span>
+                            <input id="fractal-zoom" type="range" placeholder="Zoom"
+                                   data-bind="value: fractal().polygon().zoom"
+                                   min="0.5" max="10" step="0.1" />
 
-                                </div>
+                        </div>
+                        <label class="control-label" for="fractal-depth">Rotation</label>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon" data-bind="html: fractal().polygon().rotation"></span>
+                            <input id="fractal-rotation" type="range" placeholder="Rotation"
+                                   data-bind="value: fractal().polygon().rotation"
+                                   min="0.1" max="10" step="0.1" />
 
-                            </div>
                         </div>
                     </div>
                     <div id="panel-animation-advanced" class="panel panel-settings" data-bind="visible: fractal().animation().animated">

@@ -5,6 +5,7 @@
     var linetemplateUIWidth = JQuerylineCanvas.width();
     var linetemplateMargin = 20;
     var pattern_selectedPin = ko.observable(null);
+    //var pattern_isSelectedPin = ko.pureComputed(function () { return pattern_selectedPin() != null; });
 
     var grid = function () {
         var gridSize = 24;
@@ -72,7 +73,7 @@
         var pattern = appViewModel.fractal().pattern().getdata();
         // draw grid for pattern template
         ctx.clearRect(0, 0, linetemplateWidth, linetemplateWidth);
-        ctx.strokeStyle = "gray";
+        ctx.fillStyle = "gray";
         ctx.font = "10px Arial";
 
         for (var x = 0; x <= linetemplateSteps; x++) {
@@ -134,6 +135,13 @@
             appViewModel.fractal().pattern().data.splice(pintodelete, 1);
             appViewModel.fractal().pattern.notifySubscribers(appViewModel.fractal().pattern);
         }
+    };
+    var setPinColor = function (color, evt, pintodelete) {
+        if (!pintodelete > 0) // if not integer
+            pintodelete = pattern_selectedPin();
+        appViewModel.fractal().pattern().data()[pintodelete].color(color.name);
+        appViewModel.fractal().pattern.notifySubscribers(appViewModel.fractal().pattern);
+
     };
     var init = function () {
 
@@ -230,10 +238,12 @@
         // properties
         'getTemplateIMGCoordinates': getTemplateIMGCoordinates,
         'getTemplateLineCoordinates': getTemplateLineCoordinates,
+        'pattern_selectedPin': pattern_selectedPin,
         // methods
         'init': init,
         'drawtemplate': drawtemplate,
-        'deletePin': deletePin
+        'deletePin': deletePin,
+        'setPinColor': setPinColor
     };
 };
 

@@ -3,8 +3,8 @@ var defaultFractalData = {
     'polygon': {
         'sides': 6,
         'drawingmode': 'dots',
-        'width': 800,
-        'padding': 100
+        'width': 1280,
+        'zoom': 1
     },
     'pattern': [
         { x: 0, y: 0, color: "red" },
@@ -38,9 +38,16 @@ $(function () {
 
     appViewModel = new AppViewModel({
         'fractal': fractal,
-        'userid': 0123
+        'userid': 0123,
+        'colors': [{ name: 'black' }, { name: 'dimgray' }, { name: 'darkgray' }, { name: 'lightgrey' }, { name: 'white' },
+                    { name: 'darkred' }, { name: 'firebrick' }, { name: 'red' },
+                    { name: 'orange' }, { name: 'gold' }, { name: 'yellow' },
+                    { name: 'saddlebrown' }, { name: 'sienna' }, { name: 'wheat' },
+                    { name: 'darkgreen' }, { name: 'forestgreen' }, { name: 'lime' },
+                    { name: 'teal' }, { name: 'turquoise' }, { name: 'cyan' },
+                    { name: 'navy' }, { name: 'dodgerblue' }, { name: 'skyblue' },
+                    { name: 'purple' }, { name: 'hotpink' }, { name: 'magenta' } ]
     });
-
     ko.applyBindings(appViewModel);
 
     fractal.pattern.subscribe(ui.drawtemplate, fractal);
@@ -118,15 +125,12 @@ var randomize = function () {
 var AppViewModel = function (appViewModelData) {
     /// public
     this.fractal = ko.observable(appViewModelData.fractal);
+    this.userid = appViewModelData.userid;
     this.gallery = ko.observableArray(appViewModelData.gallery);
+    this.colors = ko.observableArray(appViewModelData.colors);
 };
 
 var randomFractal = function () {
-    var randomcolors = ['black', 'gray', 'white',
-                        'red', 'orange', 'yellow',
-                        'lime', 'green', 'chartreuse',
-                        'blue', 'lightblue', 'turquoise',
-                        'pink', 'brown', 'purple']
     var ranint = function (min, max) {
         return Math.round(Math.random() * (max - min),0) + min;
     }
@@ -134,15 +138,15 @@ var randomFractal = function () {
         'polygon': {
             'sides': ranint(1, 8),
             'drawingmode': ranint(0, 1) == 0 ? 'dots' : 'lines',
-            'width': 800,
-            'padding': 100
+            'width': 1280,
+            'zoom' : 1
         },
         'pattern': [
-            { x: 0, y: 0, color: randomcolors[ranint(0, randomcolors.length-1)] },
-            { x: ranint(0, 24), y: ranint(-12, 12), color: randomcolors[ranint(0, randomcolors.length - 1)] },
-            { x: ranint(0, 24), y: ranint(-12, 12), color: randomcolors[ranint(0, randomcolors.length - 1)] },
-            { x: ranint(0, 24), y: ranint(-12, 12), color: randomcolors[ranint(0, randomcolors.length - 1)] },
-            { x: 24, y: 0, color: randomcolors[ranint(0, randomcolors.length - 1)] }
+            { x: 0, y: 0, color: appViewModel.colors()[ranint(0, appViewModel.colors().length-1)].name },
+            { x: ranint(0, 24), y: ranint(-12, 12), color: appViewModel.colors()[ranint(0, appViewModel.colors().length - 1)].name },
+            { x: ranint(0, 24), y: ranint(-12, 12), color: appViewModel.colors()[ranint(0, appViewModel.colors().length - 1)].name },
+            { x: ranint(0, 24), y: ranint(-12, 12), color: appViewModel.colors()[ranint(0, appViewModel.colors().length - 1)].name },
+            { x: 24, y: 0, color: appViewModel.colors()[ranint(0, appViewModel.colors().length - 1)].name }
         ],
         'animation': {
             'animated': false
