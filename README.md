@@ -5,13 +5,20 @@ Fractal Factory is an open source, javascript app to make fractals and see how i
 ## Getting Started
 
 To use this template, choose one of the following options to get started:
-* Download the latest release on Start Bootstrap
-* Fork this repository on GitHub
+* Open the hosted application at http://phoebecoeus.net/think/fractal-factory/
+* Download the latest release or fork this repository on GitHub
+
 
 ## Bugs and Issues
 
 Have a bug or an issue with this template?
 [Open a new issue](https://github.com/geck1942/fractal-factory/issues) here on GitHub.
+
+
+## Next features
+
+- zoom, rotation and infinite animtaion
+- fractal galleries
 
 ## Creator
 

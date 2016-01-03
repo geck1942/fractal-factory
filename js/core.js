@@ -127,7 +127,10 @@ var AppViewModel = function (appViewModelData) {
     this.fractal = ko.observable(appViewModelData.fractal);
     this.userid = appViewModelData.userid;
     this.gallery = ko.observableArray(appViewModelData.gallery);
+
     this.colors = ko.observableArray(appViewModelData.colors);
+    this.lock_drawingmode = ko.observable(false);
+    this.lock_polygonsides = ko.observable(false);
 };
 
 var randomFractal = function () {
@@ -148,6 +151,12 @@ var randomFractal = function () {
             'animated': false
         }
     };
+    // verify locked values
+    if (appViewModel.lock_drawingmode())
+        f.polygon.drawingmode = appViewModel.fractal().polygon().drawingmode();
+    if (appViewModel.lock_polygonsides())
+        f.polygon.sides = appViewModel.fractal().polygon().sides();
+
     var pattern_steps = ranint(2, 4);
     for (var i = 0; i < pattern_steps; i++)
         f.pattern.splice(1, 0, {

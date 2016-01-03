@@ -88,8 +88,8 @@
                            data-bind="attr: { href: fractal().url }"
                                 id="btn-savefractal">
                             <br />
-                            <i class="fa fa-3x fa-save"></i>
-                            <br />Save
+                            <i class="fa fa-3x fa-external-link-square"></i>
+                            <br />Open picture
                         </a>
                 </div>
 
@@ -116,8 +116,27 @@
                         <div class="form-group input-group">
                             <span class="input-group-addon" data-bind="html: fractal().polygon().sides"></span>
                             <input id="fractal-sides" type="range" placeholder="Polygon sides" class="form-control"
-                                   data-bind="value: fractal().polygon().sides"
+                                   data-bind="value: fractal().polygon().sides, disable: lock_polygonsides"
                                    min="1" max="24">
+                            <div class="input-group-addon btn btn-warning"
+                                 data-bind="click: function() { lock_polygonsides(!lock_polygonsides()); }">
+                                <i class="fa fa-lock" data-bind="visible: lock_polygonsides"></i>
+                                <i class="fa fa-unlock-alt" data-bind="visible: !lock_polygonsides()"></i>
+                            </div>
+                        </div>
+                        <label class="control-label" for="fractal-drawingmode">Drawing</label>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon" data-bind="html: fractal().polygon().drawingmode() == 'dots' ? 'o' : '|'"></span>
+                            <select id="fractal-drawingmode" class="form-control"
+                                    data-bind="value: fractal().polygon().drawingmode, disable: lock_drawingmode">
+                                <option value="dots">Colored dots</option>
+                                <option value="lines">Lines</option>
+                            </select>
+                            <div class="input-group-addon btn btn-warning"
+                                 data-bind="click: function() { lock_drawingmode(!lock_drawingmode()); }">
+                                <i class="fa fa-lock" data-bind="visible: lock_drawingmode"></i>
+                                <i class="fa fa-unlock-alt" data-bind="visible: !lock_drawingmode()"></i>
+                            </div>
                         </div>
                         <label class="control-label" for="fractal-depth">Definition | Quality</label>
                         <div class="form-group input-group">
@@ -136,14 +155,14 @@
                                    min="0.5" max="10" step="0.1" />
 
                         </div>
-                        <label class="control-label" for="fractal-depth">Rotation</label>
+                        <!--<label class="control-label" for="fractal-depth">Rotation</label>
                         <div class="form-group input-group">
                             <span class="input-group-addon" data-bind="html: fractal().polygon().rotation"></span>
                             <input id="fractal-rotation" type="range" placeholder="Rotation"
                                    data-bind="value: fractal().polygon().rotation"
                                    min="0.1" max="10" step="0.1" />
 
-                        </div>
+                        </div>-->
                     </div>
                     <div id="panel-animation-advanced" class="panel panel-settings" data-bind="visible: fractal().animation().animated">
                         <div class="row" role="form">

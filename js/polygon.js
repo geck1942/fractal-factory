@@ -11,6 +11,7 @@
     var getdata = function () {
         return {
             'sides': sides(),
+            'drawingmode': drawingmode(),
             'width': width(),
             'zoom': zoom()
         }

@@ -17,7 +17,7 @@
     var onsomethingchanged = function () {
         stop();
         draw();
-        //save(getdata());
+        save(getdata());
         url(element[0].toDataURL("image/png"));
     };
     var play = function () {
@@ -111,34 +111,35 @@
     // draw a pattern representation. 1 unit long space (center at [0,0] ).
     var draw_pattern = function (patternDataArray, depth) {
         var depthpct = depth / maxdepth();
-        //switch (polygon().drawingmode()) {
-        //    case "dots":
+        switch (polygon().drawingmode()) {
+            case "dots":
                 for (var i = 0; i < patternDataArray.length; i++) {
 
                     // set color for the dot
                     ctx.fillStyle = patternDataArray[i].color;
-                    //var IMG_location = drawing_getImageCoordinates(patternDataArray[i].x, patternDataArray[i].y);
-                    //ctx.beginPath();
-                    //if (polygon().zoom() == 1)
-                        ctx.fillRect(patternDataArray[i].x, patternDataArray[i].y, polygon().zoom() / polygon().width(), polygon().zoom() / polygon().width());
-                    //else
-                     //   ctx.arc(patternDataArray[i].x, patternDataArray[i].y, polygon().zoom() / polygon().width() / 2, 0, 2 * Math.PI);
-                    //ctx.fill();
+                    ctx.fillRect(patternDataArray[i].x, patternDataArray[i].y, polygon().zoom() / polygon().width(), polygon().zoom() / polygon().width());
                 }
-                //break;
-        //    case "lines":
-        //        ctx.beginPath();
-        //        for (var i = 0; i < patternDataArray.length; i++) {
-        //            var IMG_location = drawing_getImageCoordinates(patternDataArray[i].x, patternDataArray[i].y);
-        //            ctx.strokeStyle = patternDataArray[i].color;
-        //            if (i == 0)
-        //                ctx.moveTo(IMG_location.x, IMG_location.y);
-        //            else
-        //                ctx.lineTo(IMG_location.x, IMG_location.y);
-        //            ctx.stroke();
-        //        }
-        //        break;
-        //}
+                break;
+            case "lines":
+                ctx.beginPath();
+                ctx.strokeStyle = patternDataArray[0].color;
+                ctx.lineWidth = polygon().zoom() / polygon().width();
+                ctx.moveTo(patternDataArray[0].x, patternDataArray[0].y);
+                for (var i = 1; i < patternDataArray.length; i++) {
+                    // set color for the line
+                        ctx.lineTo(patternDataArray[i].x, patternDataArray[i].y);
+                        if (i == patternDataArray.length - 1 
+                            || patternDataArray[i].color != patternDataArray[i -1].color) {
+                            // color have changed or we are drawing the last line
+                            // change the color and start a new path
+                            ctx.stroke();
+                            ctx.strokeStyle = patternDataArray[i].color;
+                            ctx.beginPath();
+                            ctx.moveTo(patternDataArray[i].x, patternDataArray[i].y);
+                    }
+                }
+                break;
+        }
 
     };
     //// return the x/y coordinates of the picture from a 1 unit long space coordinates.
