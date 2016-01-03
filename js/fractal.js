@@ -229,6 +229,7 @@
         animation.subscribe(onsomethingchanged, that);
         maxdepth.subscribe(onsomethingchanged, that);
         pattern.subscribe(onsomethingchanged, that);
+        onsomethingchanged();
     }();
 
     /// public
