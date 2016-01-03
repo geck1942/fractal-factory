@@ -134,7 +134,7 @@ var randomFractal = function () {
     var ranint = function (min, max) {
         return Math.round(Math.random() * (max - min),0) + min;
     }
-    return {
+    var f = {
         'polygon': {
             'sides': ranint(1, 8),
             'drawingmode': ranint(0, 1) == 0 ? 'dots' : 'lines',
@@ -142,14 +142,24 @@ var randomFractal = function () {
             'zoom' : 1
         },
         'pattern': [
-            { x: 0, y: 0, color: appViewModel.colors()[ranint(0, appViewModel.colors().length-1)].name },
-            { x: ranint(0, 24), y: ranint(-12, 12), color: appViewModel.colors()[ranint(0, appViewModel.colors().length - 1)].name },
-            { x: ranint(0, 24), y: ranint(-12, 12), color: appViewModel.colors()[ranint(0, appViewModel.colors().length - 1)].name },
-            { x: ranint(0, 24), y: ranint(-12, 12), color: appViewModel.colors()[ranint(0, appViewModel.colors().length - 1)].name },
-            { x: 24, y: 0, color: appViewModel.colors()[ranint(0, appViewModel.colors().length - 1)].name }
+            { x: 0, y: 0, color: appViewModel.colors()[ranint(0, appViewModel.colors().length-1)].name }
         ],
         'animation': {
             'animated': false
         }
     };
+    var pattern_steps = ranint(2, 4);
+    for (var i = 0; i < pattern_steps; i++)
+        f.pattern.splice(1, 0, {
+            x: ranint(0, 24),
+            y: ranint(-12, 12),
+            color: appViewModel.colors()[ranint(0, appViewModel.colors().length - 1)].name
+        });
+    // last dot is known, and color is the same as first
+    f.pattern.push({
+        x: 24,
+        y: 0,
+        color: f.pattern[0].color
+    });
+    return f;
 }

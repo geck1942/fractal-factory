@@ -36,68 +36,63 @@
                     <div class="panel-heading panel-settings">
                         <div class="row">
                             <div class="col-xs-3">
-                                <i class="fa fa-gears fa-4x"></i>
+                                <i class="fa fa-gears fa-3x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
                                 <div class="huge">Settings</div>
-                                <div>make your fractal</div>
+                                <!--<div>make your fractal</div>-->
                             </div>
                         </div>
                     </div>
                     <div class="panel panel-settings">
-                        <div class="form-group input-group" data-bind="visible: ui.pattern_selectedPin() != null">
-                            <button type="button"
-                                    data-bind="click: ui.deletePin, enabled: ui.pattern_selectedPin"
-                                    class="btn btn-default">
-                                <i class="fa fa-remove"></i>
-                            </button>
-                        </div>
-                        <div class="form-group input-group" data-bind="foreach: colors, visible: ui.pattern_selectedPin() != null">
-                            <button type="button"
-                                    data-bind="style: {'background-color' : name }, click : ui.setPinColor"
-                                    class="btn btn-default">
-                            </button>
-                        </div>
-                        <canvas class="canvas" id="template-canvas" width="400" height="400"></canvas>
-                        <!--<div class="row">
-                            <div class="col-xs-9">
+                        <div class="row">
+                            <div class="col-xs-10">
+                                <canvas class="canvas" id="template-canvas" width="400" height="400"></canvas>
                             </div>
-                            <div class="col-xs-3">
-                            </div>
-                        </div>-->
-                        <div role="form">
-                            <label class="control-label" for="fractal-depth">Live preview (quality)</label>
-                            <div class="form-group input-group">
-                                <span class="input-group-addon" data-bind="html: fractal().maxdepth"></span>
-                                <input id="fractal-depth" type="range" placeholder="Depth"
-                                       data-bind="value: fractal().maxdepth"
-                                       min="0" max="7">
-
+                            <div class="col-xs-2">
+                                <div class="form-group input-group" data-bind="visible: ui.pattern_selectedPin() != null">
+                                    <button type="button"
+                                            data-bind="click: ui.deletePin, enabled: ui.pattern_selectedPin"
+                                            class="btn btn-default">
+                                        <i class="fa fa-remove"></i>
+                                    </button>
+                                </div>
+                                <div class="form-group input-group" data-bind="foreach: colors, visible: ui.pattern_selectedPin() != null">
+                                    <button type="button"
+                                            data-bind="style: {'background-color' : name }, click : ui.setPinColor"
+                                            class="btn btn-default"></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="panel-footer">
-                        <span class="pull-right">
-                            <button type="button" class="btn btn-warning"
-                                    id="btn-randomize">
-                                <i class="fa fa-star-o"></i> Randomize
-                            </button>
-                        </span>
-                        <span class="pull-right">
-                            <button type="button" class="btn btn-default"
-                                    id="btn-reset">
-                                <i class="fa fa-arrow-circle-down"></i> Reset
-                            </button>
-                        </span>
-                        <span class="pull-right">
-                            <button type="button" class="btn btn-success"
-                                    id="btn-hdrendering">
-                                <i class="fa fa-arrow-circle-right"></i> Generate
-                            </button>
-                        </span>
-                        <div class="clearfix"></div>
                     </div>
                 </div>
+
+                    <!--<div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">Fractals</div>
+                            </div>
+                        </div>
+                    </div>-->
+                    <div class="panel-fractals">
+                        
+                        <button type="button" class="btn btn-warning"
+                                id="btn-randomize">
+                            <br />
+                            <i class="fa fa-3x fa-refresh"></i>
+                            <br />Randomize !
+                        </button>
+                        <a class="btn btn-info"
+                           data-bind="attr: { href: fractal().url }"
+                                id="btn-savefractal">
+                            <br />
+                            <i class="fa fa-3x fa-save"></i>
+                            <br />Save
+                        </a>
+                </div>
+
             </div>
             <div class="col-md-6">
                 <canvas class="canvas" id="fractal-canvas" width="1280" height="1280"></canvas>
@@ -108,11 +103,11 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-3">
-                                <i class="fa fa-play fa-4x"></i>
+                                <i class="fa fa-play fa-3x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
-                                <div class="huge">Animation</div>
-                                <div>Live !</div>
+                                <div class="huge">Rendering</div>
+                                <!--<div>Live !</div>-->
                             </div>
                         </div>
                     </div>
@@ -123,6 +118,15 @@
                             <input id="fractal-sides" type="range" placeholder="Polygon sides" class="form-control"
                                    data-bind="value: fractal().polygon().sides"
                                    min="1" max="24">
+                        </div>
+                        <label class="control-label" for="fractal-depth">Definition | Quality</label>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon btn btn-danger" data-bind="click: function() { fractal().maxdepth(fractal().maxdepth() - 1) }">-</span>
+                            <input id="fractal-depth" type="range" placeholder="Depth"
+                                   data-bind="value: fractal().maxdepth" disabled="disabled"
+                                   min="0" max="8" />
+                            <div class="input-group-addon btn btn-success" data-bind="click: function() { fractal().maxdepth(fractal().maxdepth()+1) }">+</div>
+
                         </div>
                         <label class="control-label" for="fractal-depth">Zoom</label>
                         <div class="form-group input-group">

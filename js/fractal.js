@@ -2,6 +2,7 @@
     /// private
     var that = this;
     var maxdepth = ko.observable(6);
+    var url = ko.observable(null);
     var camera = {
         'zoom': 1,
         'rotation': 0,
@@ -16,7 +17,8 @@
     var onsomethingchanged = function () {
         stop();
         draw();
-        save(getdata());
+        //save(getdata());
+        url(element[0].toDataURL("image/png"));
     };
     var play = function () {
         playing = setInterval(function () {
@@ -214,6 +216,7 @@
         return {
             'polygon': polygon().getdata(),
             'pattern': pattern().getdata(),
+            'url': url(),
             'animation': animation().getdata()
         }
     };
@@ -238,6 +241,7 @@
         'pattern': pattern,
         'animation': animation,
         'maxdepth': maxdepth,
+        'url': url,
         //'drawingmode': drawingmode,
         // methods
         'play': play,
