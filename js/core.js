@@ -140,7 +140,7 @@ var randomFractal = function () {
     var f = {
         'polygon': {
             'sides': ranint(1, 8),
-            'drawingmode': ranint(0, 1) == 0 ? 'dots' : 'lines',
+            'drawingmode': 'dots',
             'width': 1280,
             'zoom' : 1
         },
